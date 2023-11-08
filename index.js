@@ -25,6 +25,7 @@ async function run() {
     await client.connect();
 
     const rafhotelCol = client.db("raf-hotel").collection("rooms");
+    const rafhotelCol2 = client.db("raf-hotel").collection("bookings");
 
     app.get("/rooms", async (req, res) => {
       const cursor = rafhotelCol.find();
@@ -36,6 +37,18 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await rafhotelCol.findOne(query);
+      res.send(result);
+    });
+
+    app.get("/bookings", async (req, res) => {
+      const cursor = rafhotelCol2.find();
+      const rest = await cursor.toArray();
+      res.send(rest);
+    });
+
+    app.post("/bookings", async (req, res) => {
+      const ne = req.body;
+      const result = await rafhotelCol2.insertOne(ne);
       res.send(result);
     });
 
