@@ -5,7 +5,13 @@ const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        // 'http://localhost:5173',
+        'https://raf-hotel.web.app/'
+    ],
+    credentials: true
+}));
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -20,6 +26,10 @@ const client = new MongoClient(uri, {
   },
 });
 
+const logger = (req, res, next) =>{
+    console.log('log: info', req.method, req.url);
+    next();
+}
 
 const verifyToken = (req, res, next) =>{
     const token = req?.cookies?.token;
@@ -60,9 +70,11 @@ async function run() {
             .send({ success: true });
     })
 
-
-
-
+    app.post('/logout', async (req, res) => {
+        const user = req.body;
+        console.log('logging out', user);
+        res.clearCookie('token', { maxAge: 0 }).send({ success: true })
+    })
 
     app.get("/rooms", async (req, res) => {
       const cursor = rafhotelCol.find();
