@@ -26,9 +26,15 @@ async function run() {
 
     const rafhotelCol = client.db("raf-hotel").collection("rooms");
     const rafhotelCol2 = client.db("raf-hotel").collection("bookings");
+    const rafhotelCol3 = client.db("raf-hotel").collection("reviews");
 
     app.get("/rooms", async (req, res) => {
       const cursor = rafhotelCol.find();
+      const rest = await cursor.toArray();
+      res.send(rest);
+    });
+    app.get("/reviews", async (req, res) => {
+      const cursor = rafhotelCol3.find();
       const rest = await cursor.toArray();
       res.send(rest);
     });
@@ -77,6 +83,7 @@ async function run() {
       const result=await rafhotelCol.updateOne(filter,pro,options);
         res.send(result);
      })
+    
     app.put('/bookings/:id',async(req,res)=>
      {
       const id=req.params.id;
@@ -118,6 +125,11 @@ async function run() {
     app.post("/bookings", async (req, res) => {
       const ne = req.body;
       const result = await rafhotelCol2.insertOne(ne);
+      res.send(result);
+    });
+    app.post("/reviews", async (req, res) => {
+      const ne = req.body;
+      const result = await rafhotelCol3.insertOne(ne);
       res.send(result);
     });
 
