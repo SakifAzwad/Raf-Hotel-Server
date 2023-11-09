@@ -40,6 +40,23 @@ async function run() {
       res.send(result);
     });
 
+    app.put('/rooms/:id',async(req,res)=>
+     {
+      const id=req.params.id;
+      const filter={_id: new ObjectId(id)};
+      const options = {upsert : true};
+      const update=req.body;
+      const pro = 
+      {
+        $set:
+        {
+          availability:update.availability
+        }
+      }
+      const result=await rafhotelCol.updateOne(filter,pro,options);
+        res.send(result);
+     })
+
     app.get("/bookings", async (req, res) => {
       const cursor = rafhotelCol2.find();
       const rest = await cursor.toArray();
