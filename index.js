@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -22,11 +23,29 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const rafhotelCol = client.db("raf-hotel").collection("rooms");
     const rafhotelCol2 = client.db("raf-hotel").collection("bookings");
     const rafhotelCol3 = client.db("raf-hotel").collection("reviews");
+
+
+    app.post('/jwt', logger, async (req, res) => {
+        const user = req.body;
+        console.log('user for token', user);
+        const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        })
+            .send({ success: true });
+    })
+
+
+
+
 
     app.get("/rooms", async (req, res) => {
       const cursor = rafhotelCol.find();
