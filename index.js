@@ -39,7 +39,28 @@ async function run() {
       const result = await rafhotelCol.findOne(query);
       res.send(result);
     });
-
+    app.get("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await rafhotelCol2.findOne(query);
+      res.send(result);
+    });
+    app.put('/update/:id',async(req,res)=>
+    {
+     const id=req.params.id;
+     const filter={_id: new ObjectId(id)};
+     const options = {upsert : true};
+     const update=req.body;
+     const pro = 
+     {
+       $set:
+       {
+         bookingDate:update.bookingDate
+       }
+     }
+     const result=await rafhotelCol2.updateOne(filter,pro,options);
+       res.send(result);
+    })
     app.put('/rooms/:id',async(req,res)=>
      {
       const id=req.params.id;
@@ -54,6 +75,22 @@ async function run() {
         }
       }
       const result=await rafhotelCol.updateOne(filter,pro,options);
+        res.send(result);
+     })
+    app.put('/bookings/:id',async(req,res)=>
+     {
+      const id=req.params.id;
+      const filter={_id: new ObjectId(id)};
+      const options = {upsert : true};
+      const update=req.body;
+      const pro = 
+      {
+        $set:
+        {
+          bookingDate:update.bookingDate
+        }
+      }
+      const result=await rafhotelCol2.updateOne(filter,pro,options);
         res.send(result);
      })
 
