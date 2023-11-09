@@ -62,6 +62,21 @@ async function run() {
       const rest = await cursor.toArray();
       res.send(rest);
     });
+    app.get('/bookings/:id',async(req,res)=>
+     {
+      const id=req.params.id;
+      const query={_id: new ObjectId(id)};
+      const result=await rafhotelCol2.findOne(query);
+        res.send(result);
+     })
+
+     app.delete('/bookings/:id',async(req,res)=>
+     {
+       const id=req.params.id;
+       const query={_id: new ObjectId(id)};
+       const rest=await rafhotelCol2.deleteOne(query);
+       res.send(rest);
+     })
 
     app.post("/bookings", async (req, res) => {
       const ne = req.body;
